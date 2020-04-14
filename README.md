@@ -19,6 +19,8 @@ Write a program that pilots a light-bike. Light-bikes are like regular bikes exc
 
 Please don't modify game state using unsafe and/or reflect
 
+If this is confusing, there's a demo video
+
 ## Player Controller
 
 Implement this interface:
