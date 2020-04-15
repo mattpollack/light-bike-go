@@ -66,6 +66,7 @@ const (
 
 type PlayerController interface {
 	Update(State) PlayerMove
+	Reset()
 }
 
 type player struct {
@@ -115,6 +116,37 @@ func (a *Arena) Get(x int, y int) int {
 	return a.blocks[x+y*a.width]
 }
 
+var symbolMap = map[int]string{
+	-2: "*",
+	-1: " ",
+	0:  "0",
+	1:  "1",
+	2:  "2",
+	3:  "3",
+	4:  "4",
+	5:  "5",
+	6:  "6",
+	7:  "7",
+	8:  "8",
+	9:  "9",
+	10: "A",
+	11: "B",
+	12: "C",
+	13: "D",
+	14: "E",
+	15: "F",
+	16: "G",
+	17: "H",
+	18: "I",
+	19: "J",
+	20: "K",
+	21: "L",
+	22: "M",
+	23: "N",
+	24: "O",
+	25: "P",
+}
+
 func (a *Arena) draw() {
 	for x := 0; x < a.width+2; x++ {
 		fmt.Print("#")
@@ -129,12 +161,7 @@ func (a *Arena) draw() {
 			fmt.Print("#")
 		}
 
-		switch block {
-		case 0:
-			fmt.Print(" ")
-		default:
-			fmt.Print(block - 1)
-		}
+		fmt.Print(symbolMap[block-1])
 
 		if x == a.width-1 {
 			fmt.Println("#")
@@ -162,6 +189,10 @@ func (g *Game) state(p int) State {
 		Y:            g.players[p].y,
 		PreviousMove: g.players[p].move,
 	}
+}
+
+func (g *Game) StepsTaken() int {
+	return g.step
 }
 
 func (g *Game) Step() ([]int, error) {
@@ -240,6 +271,8 @@ func (g *Game) Step() ([]int, error) {
 			if p1.x == p2.x && p1.y == p2.y {
 				p1.dead = true
 				p2.dead = true
+
+				g.arena.set(-1, p1.x, p1.y)
 
 				break
 			}
